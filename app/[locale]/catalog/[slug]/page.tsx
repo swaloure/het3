@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import { setRequestLocale } from "next-intl/server"
 import { products } from "@/data/products"
 import { ProductDetail } from "@/components/catalog/product-detail"
 import { getLocalizedValue } from "@/lib/i18n"
@@ -11,6 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
+  setRequestLocale(locale)
   const product = products.find((p) => p.slug === slug)
   if (!product) return {}
 
@@ -28,7 +30,8 @@ export function generateStaticParams() {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { slug } = await params
+  const { locale, slug } = await params
+  setRequestLocale(locale)
   const product = products.find((p) => p.slug === slug)
 
   if (!product) {

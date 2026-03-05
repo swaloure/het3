@@ -4,6 +4,10 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts")
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  basePath: '/heat3',
+  assetPrefix: '/heat3',
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },

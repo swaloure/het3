@@ -1,13 +1,17 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
-import { getMessages, getTranslations } from "next-intl/server"
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { routing } from "@/i18n/routing"
 import { Toaster } from "sonner"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import "../globals.css"
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -18,6 +22,7 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   const t = await getTranslations({ locale, namespace: "meta" })
   return {
     title: t("title"),
@@ -43,7 +48,8 @@ export default async function LocaleLayout({
     notFound()
   }
 
-  const messages = await getMessages()
+  setRequestLocale(locale)
+  const messages = await getMessages({ locale })
 
   return (
     <html lang={locale} className="dark">
